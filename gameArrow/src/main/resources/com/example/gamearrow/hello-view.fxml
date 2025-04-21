@@ -4,16 +4,14 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<Pane fx:id="pane" maxHeight="400" maxWidth="600" minHeight="400" minWidth="600" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gamearrow.HelloController">
+<Pane fx:id="pane" maxHeight="400" maxWidth="600" minHeight="400" minWidth="600" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gamearrow.client.Client">
    <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" height="50.0" layoutX="-11.0" layoutY="177.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />
       <Circle fx:id="circleB" fill="#e5feff" layoutX="270.0" layoutY="200.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
       <Circle fx:id="circleS" fill="#e5feff" layoutX="360.0" layoutY="200.0" radius="15.0" stroke="BLACK" strokeType="INSIDE" />
-      <Button layoutX="230.0" layoutY="350.0" mnemonicParsing="false" onAction="#shot" prefHeight="25.0" prefWidth="101.0" text="Выстрел" />
-      <Button layoutX="120.0" layoutY="350.0" mnemonicParsing="false" onAction="#startGame" prefHeight="25.0" prefWidth="101.0" text="Готов" />
-      <Button layoutX="10.0" layoutY="350.0" mnemonicParsing="false" onAction="#pausedGame" prefHeight="25.0" prefWidth="101.0" text="Пауза" />
-      <Button layoutX="15.0" layoutY="375.0" mnemonicParsing="false" onAction="#endGame" text="Закончить игру" />
-      <Label fx:id="countShot" layoutX="14.0" layoutY="245.0" text="Выстрелы:  " />
-      <Label fx:id="countScore" layoutX="14.0" layoutY="279.0" text="Счёт игрока:" />
+      <Button layoutX="230.0" layoutY="350.0" mnemonicParsing="false" onAction="#onShootClicked" prefHeight="25.0" prefWidth="101.0" text="Выстрел" />
+      <Button layoutX="14.0" layoutY="350.0" mnemonicParsing="false" onAction="#onReadyClicked" prefHeight="25.0" prefWidth="101.0" text="Готов" />
+      <Button layoutX="123.0" layoutY="350.0" mnemonicParsing="false" onAction="#onPauseClicked" prefHeight="25.0" prefWidth="101.0" text="Пауза" />
+      <Label fx:id="countShot" layoutX="17.0" layoutY="327.0" text="Выстрелов: 0" />
+      <Label fx:id="countScore" layoutX="115.0" layoutY="327.0" text="Счёт игрока:" />
    </children>
 </Pane>

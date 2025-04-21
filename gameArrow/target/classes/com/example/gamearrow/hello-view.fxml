@@ -1,17 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<Pane fx:id="pane" maxHeight="400" maxWidth="600" minHeight="400" minWidth="600" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.gamearrow.client.Client">
-   <children>
-      <Circle fx:id="circleB" fill="#e5feff" layoutX="270.0" layoutY="200.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
-      <Circle fx:id="circleS" fill="#e5feff" layoutX="360.0" layoutY="200.0" radius="15.0" stroke="BLACK" strokeType="INSIDE" />
-      <Button layoutX="230.0" layoutY="350.0" mnemonicParsing="false" onAction="#onShootClicked" prefHeight="25.0" prefWidth="101.0" text="Выстрел" />
-      <Button layoutX="14.0" layoutY="350.0" mnemonicParsing="false" onAction="#onReadyClicked" prefHeight="25.0" prefWidth="101.0" text="Готов" />
-      <Button layoutX="123.0" layoutY="350.0" mnemonicParsing="false" onAction="#onPauseClicked" prefHeight="25.0" prefWidth="101.0" text="Пауза" />
-      <Label fx:id="countShot" layoutX="17.0" layoutY="327.0" text="Выстрелов: 0" />
-      <Label fx:id="countScore" layoutX="115.0" layoutY="327.0" text="Счёт игрока:" />
-   </children>
-</Pane>
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.gamearrow.client.Client"
+            prefWidth="800" prefHeight="400">
+
+   <!-- Левая панель: список игроков -->
+   <left>
+      <ScrollPane prefWidth="200">
+         <content>
+            <VBox fx:id="playersInfoBox" spacing="5">
+               <padding>
+                  <Insets top="10" right="10" bottom="10" left="10"/>
+               </padding>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </left>
+
+   <center>
+      <Pane fx:id="pane" minWidth="600" minHeight="400" maxWidth="600" maxHeight="400">
+         <children>
+            <Circle fx:id="circleB" fill="#e5feff" layoutX="270.0" layoutY="200.0" radius="30.0" stroke="BLACK"/>
+            <Circle fx:id="circleS" fill="#e5feff" layoutX="360.0" layoutY="200.0" radius="15.0" stroke="BLACK"/>
+         </children>
+      </Pane>
+   </center>
+
+   <bottom>
+      <HBox spacing="10" alignment="CENTER">
+         <padding>
+            <Insets top="10" right="10" bottom="10" left="10"/>
+         </padding>
+         <Button fx:id="readyButton" text="Готов" onAction="#onReadyClicked"/>
+         <Button fx:id="shootButton" text="Выстрел" onAction="#onShootClicked"/>
+         <Button fx:id="pauseButton" text="Пауза" onAction="#onPauseClicked"/>
+      </HBox>
+   </bottom>
+
+</BorderPane>

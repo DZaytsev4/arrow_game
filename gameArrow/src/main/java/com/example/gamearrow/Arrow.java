@@ -1,10 +1,10 @@
 package com.example.gamearrow;
 
 public class Arrow {
-    public String ownerId;   // чей выстрел
-    public double x, y;      // текущая позиция «носа» стрелы
-    public double dx;        // скорость по X
-    public boolean active;   // пока true — стрела в полёте
+    public String ownerId;
+    public double x, y;
+    public double dx;
+    public boolean active;
 
     public Arrow(String ownerId, double startX, double startY, double dx) {
         this.ownerId = ownerId;

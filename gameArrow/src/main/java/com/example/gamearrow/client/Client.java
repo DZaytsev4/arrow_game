@@ -2,10 +2,14 @@ package com.example.gamearrow.client;
 
 import com.example.gamearrow.Arrow;
 import com.example.gamearrow.GameState;
+import com.example.gamearrow.model.PlayerStats;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -15,7 +19,13 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import java.io.*;
 import java.net.Socket;
 import java.util.Optional;
@@ -32,6 +42,8 @@ public class Client {
     private String myId;
     private final Gson gson = new Gson();
     private final Color[] playerColors = {Color.RED, Color.GREEN, Color.BLUE, Color.ORANGE};
+    private Stage leaderboardStage;
+    private TableView<PlayerStats> leaderboardTable;
 
     public void askNameAndConnect(Stage owner) {
         Platform.runLater(() -> {
@@ -96,6 +108,13 @@ public class Client {
         try {
             String line;
             while ((line = in.readLine()) != null) {
+                if (line.startsWith("LEADERBOARD:")) {
+                    String jsonData = line.substring(12).trim();
+                    PlayerStats[] stats = gson.fromJson(jsonData, PlayerStats[].class);
+                    updateLeaderboard(stats);
+                    continue;
+                }
+
                 if (line.startsWith("VICTORY:")) {
                     String winner = line.substring(8);
                     Platform.runLater(() -> {
@@ -114,7 +133,14 @@ public class Client {
             e.printStackTrace();
         }
     }
-
+    private void updateLeaderboard(PlayerStats[] stats) {
+        Platform.runLater(() -> {
+            if (leaderboardTable != null) {
+                leaderboardTable.getItems().setAll(stats);
+                leaderboardTable.getSortOrder().add(leaderboardTable.getColumns().get(1));
+            }
+        });
+    }
     private void updateGame(GameState state) {
         circleB.setLayoutY(state.circleBY);
         circleS.setLayoutY(state.circleSY);
@@ -155,4 +181,47 @@ public class Client {
     private void onShootClicked() { out.println("SHOOT"); }
     @FXML
     private void onPauseClicked() { out.println("PAUSE"); }
+
+    @FXML
+    public void onLeaderboardClicked() {
+        if (leaderboardStage == null) {
+            createLeaderboardWindow();
+        }
+
+        out.println("GET_LEADERBOARD");
+        leaderboardStage.show();
+    }
+
+    private void createLeaderboardWindow() {
+        leaderboardStage = new Stage();
+        leaderboardStage.setTitle("Таблица лидеров");
+
+        leaderboardTable = new TableView<>();
+
+        TableColumn<PlayerStats, String> nameColumn = new TableColumn<>("Игрок");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("playerName"));
+        nameColumn.setPrefWidth(150);
+
+        TableColumn<PlayerStats, Integer> winsColumn = new TableColumn<>("Победы");
+        winsColumn.setCellValueFactory(new PropertyValueFactory<>("victories"));
+        winsColumn.setPrefWidth(100);
+
+        leaderboardTable.getColumns().addAll(nameColumn, winsColumn);
+
+        VBox vbox = new VBox(leaderboardTable);
+        vbox.setPadding(new Insets(10));
+
+        leaderboardStage.setScene(new Scene(vbox, 300, 400));
+    }
+
+
+    private void handleLeaderboardData(String jsonData) {
+        PlayerStats[] stats = gson.fromJson(jsonData, PlayerStats[].class);
+        Platform.runLater(() -> {
+            if (leaderboardTable != null) {
+                leaderboardTable.getItems().setAll(stats);
+                leaderboardTable.sort();
+            }
+        });
+    }
 }

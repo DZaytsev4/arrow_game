@@ -3,9 +3,15 @@ package com.example.gamearrow.server;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import com.example.gamearrow.GameState;
 import com.example.gamearrow.Arrow;
+import com.example.gamearrow.model.PlayerStats;
 import com.google.gson.Gson;
+import com.example.gamearrow.model.HibernateUtil;
+import com.example.gamearrow.model.Player;
+import com.example.gamearrow.model.PlayerDAO;
 
 public class Server {
     private static final int MAX_PLAYERS = 4;
@@ -14,7 +20,7 @@ public class Server {
     private final List<ClientHandler> clients = new ArrayList<>();
     private final Gson gson = new Gson();
     private GameState state = new GameState();
-
+    private final PlayerDAO playerDAO = new PlayerDAO();
     private boolean firstRun = true;
 
     private Thread gameLoopThread;
@@ -64,6 +70,7 @@ public class Server {
         int score = state.scores.getOrDefault(playerId, 0);
         if (score >= 6) {
             synchronized (state) {
+                playerDAO.incrementVictories(playerId);
                 state.running = false;
                 state.arrows.clear();
                 state.circleBY = 200;
@@ -195,7 +202,7 @@ public class Server {
                     this.clientId = name;
                 }
             }
-
+            playerDAO.findOrCreatePlayer(name);
             synchronized (state) {
                 state.scores.put(clientId, 0);
                 state.shots.put(clientId, 0);
@@ -238,6 +245,8 @@ public class Server {
                                 }
                             }
                         }
+                        case "GET_LEADERBOARD" -> sendLeaderboard();
+
                         default -> {  }
                     }
                 }
@@ -254,6 +263,16 @@ public class Server {
                 }
                 Server.this.broadcastState();
             }
+        }
+        private void sendLeaderboard() {
+            List<Player> players = playerDAO.getAllPlayers();
+            List<PlayerStats> stats = players.stream()
+                    .map(p -> new PlayerStats(p.getName(), p.getVictories()))
+                    .sorted((a, b) -> Integer.compare(b.getVictories(), a.getVictories()))
+                    .collect(Collectors.toList());
+
+            String json = gson.toJson(stats);
+            send("LEADERBOARD:" + json);
         }
     }
 }

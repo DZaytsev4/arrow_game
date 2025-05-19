@@ -39,6 +39,7 @@
          <Button fx:id="readyButton" text="Готов" onAction="#onReadyClicked"/>
          <Button fx:id="shootButton" text="Выстрел" onAction="#onShootClicked"/>
          <Button fx:id="pauseButton" text="Пауза" onAction="#onPauseClicked"/>
+         <Button fx:id="leaderboardButton" text="Открыть таблицу лидеров" onAction="#onLeaderboardClicked"/>
       </HBox>
    </bottom>
 

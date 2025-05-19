@@ -3,16 +3,19 @@ module com.example.gamearrow {
     requires javafx.fxml;
     requires java.desktop;
     requires com.google.gson;
+    requires jakarta.persistence;
+    requires org.hibernate.orm.core;
+    requires java.naming;
 
+    exports com.example.gamearrow.server;
+    exports com.example.gamearrow.client;
+    exports com.example.gamearrow.model;
 
-    exports com.example.gamearrow.server;   // чтобы серверная часть могла видеть свои классы
-    exports com.example.gamearrow.client;   // чтобы клиентские контроллеры работали
-    // но главное — открываем пакет, где лежит GameState,
-    // чтобы Gson мог к нему доступиться через reflection:
+    opens com.example.gamearrow.model to
+            org.hibernate.orm.core,
+            com.google.gson,
+            javafx.base;
+
     opens com.example.gamearrow to com.google.gson;
-    // если GameState в подпакете shared, то:
-    // opens com.example.gamearrow.shared to com.google.gson;
-
-    // и если используете FXML:
     opens com.example.gamearrow.client to javafx.fxml;
 }
